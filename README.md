@@ -24,3 +24,9 @@ Potensi unggulan Kabupaten Samosir — Pariwisata. Samosirkab.go.id. (n.d.). Dia
 <img src="https://raw.githubusercontent.com/RezaGilbran/pgpblresponsi/main/firebase.jpeg" width="100" />
 <img src="https://raw.githubusercontent.com/RezaGilbran/pgpblresponsi/main/expo go.jpeg" width="100" />
 <img src="https://raw.githubusercontent.com/RezaGilbran/pgpblresponsi/main/reactnative.png" width="100" />
+
+Nama : Reza Tristian Gilbran
+
+NIM: 23/515309/SV/22520
+
+KELAS: B
