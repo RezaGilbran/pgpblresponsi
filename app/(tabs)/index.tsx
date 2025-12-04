@@ -1,98 +1,187 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, Pressable } from "react-native";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+type TWisata = {
+  id: string;
+  nama: string;
+  fotoUrl?: string;
+  foto?: any;
+  deskripsi: string;
+  harga: string;
+  maps?: string;
+  latitude?: number;
+  longitude?: number;
+};
+
+// --- DATA DEFAULT (ASSET LOKAL) ---
+const wisataDefault: TWisata[] = [
+  {
+    id: "1",
+    nama: "Huta Siallagan",
+    foto: require("../../assets/images/huta.jpeg"),
+    deskripsi: "Kampung adat Batak dengan Batu Persidangan dan rumah adat Bolon.",
+    harga: "Rp 10.000 - Rp 20.000",
+    maps: "",
+    latitude: 2.6789177,
+    longitude: 98.836382,
+  },
+  {
+    id: "2",
+    nama: "Bukit Sibea-bea",
+    foto: require("../../assets/images/patung.jpg"),
+    deskripsi: "Bukit dengan patung Yesus Kristus besar dan panorama Danau Toba.",
+    harga: "Rp 10.000 – Rp 20.000",
+    maps: "",
+    latitude: 2.4939,
+    longitude: 98.6946,
+  },
+  {
+    id: "3",
+    nama: "Danau Toba",
+    foto: require("../../assets/images/danautoba.jpeg"),
+    deskripsi: "Danau kawah vulkanik terbesar di dunia.",
+    harga: "Rp 10.000 - Rp 20.000",
+    maps: "",
+    latitude: 2.6167,
+    longitude: 98.8167,
+  },
+  {
+    id: "4",
+    nama: "Bukit Holbung",
+    foto: require("../../assets/images/bukitholbung.jpg"),
+    deskripsi: "Bukit indah dengan padang rumput luas.",
+    harga: "Rp 10.000 – Rp 10.000",
+    maps: "",
+    latitude: 2.5539,
+    longitude: 98.7742,
+  },
+];
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const [wisataFirebase, setWisataFirebase] = useState<TWisata[]>([]);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  // --- LOAD DATA DARI FIRESTORE ---
+  const loadFirebaseData = async () => {
+    const snap = await getDocs(collection(db, "wisata"));
+    const list: TWisata[] = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+
+      list.push({
+        id: docSnap.id,
+        nama: data.nama,
+        deskripsi: data.deskripsi,
+        harga: data.harga,
+        maps: data.maps || "",
+        fotoUrl: data.fotoUrl,
+        latitude: typeof data.latitude === "string" ? parseFloat(data.latitude) : data.latitude,
+        longitude: typeof data.longitude === "string" ? parseFloat(data.longitude) : data.longitude,
+      });
+    });
+
+    setWisataFirebase(list);
+  };
+
+  useEffect(() => {
+    loadFirebaseData();
+  }, []);
+
+  const allWisata = [...wisataDefault, ...wisataFirebase];
+
+  return (
+    <View style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>SITOURS</Text>
+      </View>
+
+      <FlatList
+        data={allWisata}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image
+              source={
+                item.fotoUrl
+                  ? { uri: item.fotoUrl }
+                  : item.foto
+              }
+              style={styles.image}
+            />
+
+            <Text style={styles.title}>{item.nama}</Text>
+
+            <Pressable
+              style={styles.detailButton}
+              onPress={() =>
+                router.push({
+                  pathname: "/detail",
+                  params: {
+                    id: item.id,
+                    nama: item.nama,
+                    deskripsi: item.deskripsi,
+                    harga: item.harga,
+                    maps: item.maps,
+                    latitude: item.latitude?.toString() || "",
+                    longitude: item.longitude?.toString() || "",
+                    foto: item.fotoUrl ?? "",
+                  },
+                })
+              }
+            >
+              <Text style={styles.detailText}>Detail</Text>
+            </Pressable>
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  header: {
+    paddingTop: 50,
+    paddingBottom: 15,
+    backgroundColor: "#4A90E2",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  headerTitle: {
+    fontSize: 26,
+    fontWeight: "700",
+    color: "white",
+    letterSpacing: 2,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  card: {
+    margin: 12,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
+    elevation: 3,
+  },
+  image: {
+    width: "100%",
+    height: 180,
+  },
+  title: {
+    fontSize: 18,
+    padding: 10,
+    fontWeight: "600",
+  },
+  detailButton: {
+    backgroundColor: "#4A90E2",
+    padding: 12,
+    alignItems: "center",
+    margin: 10,
+    borderRadius: 8,
+  },
+  detailText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });
