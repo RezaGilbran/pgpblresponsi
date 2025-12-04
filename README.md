@@ -4,11 +4,17 @@ SITOURS adalah aplikasi mobile yang dikembangkan untuk mendukung digitalisasi pa
 <img src="https://raw.githubusercontent.com/RezaGilbran/pgpblresponsi/main/Home.jpeg" width="300" />
 
 KOMPONEN PEMBANGUN PRODUK
+
 -EXPO ROUTER
+
 -LEAFLET JS
+
 -EXPO GO
+
 -FIREBASE FIRESTORE
+
 -CLOUDINARY
+
 -REACT NATIVE
 
 SUMBER DATA:
