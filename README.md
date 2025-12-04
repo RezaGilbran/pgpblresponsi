@@ -21,7 +21,6 @@ SUMBER DATA:
 Potensi unggulan Kabupaten Samosir — Pariwisata. Samosirkab.go.id. (n.d.). Diakses 12 April 2025, dari https://samosirkab.go.id/potensi-unggulan-kabupaten-samosir-pariwisata/
 
 <img src="https://raw.githubusercontent.com/RezaGilbran/pgpblresponsi/main/leaflet.jpeg" width="100" />
-
 <img src="https://raw.githubusercontent.com/RezaGilbran/pgpblresponsi/main/firebase.jpeg" width="100" />
-
 <img src="https://raw.githubusercontent.com/RezaGilbran/pgpblresponsi/main/expo go.jpeg" width="100" />
+<img src="https://raw.githubusercontent.com/RezaGilbran/pgpblresponsi/main/reactnative.png" width="100" />
